@@ -1,15 +1,30 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class Main {
 	public static void main(String[] args) {
-		String[] exprs = {"2", "2.0", ".2", "2+3", "2-3", "2*3", "2/3", "(2+3)/5", "2*(-3)"};
-		
 		Parser parser = new Parser();
-		try {
-			for (String expr : exprs)
-				System.out.printf("%s = %f\n", expr, parser.parse(expr).eval());
-		} catch (Exception e) {
-			e.printStackTrace();
+	    BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+	    
+	    // REPL
+		while (true) {
+			System.out.print("> ");
+			String expr = null;
+			try {
+				expr = input.readLine();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			if (expr == null)
+				break;
+			
+			try {
+				System.out.println(parser.parse(expr).eval());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
-
 }
