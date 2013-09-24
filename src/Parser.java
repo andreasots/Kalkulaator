@@ -73,9 +73,36 @@ public class Parser {
 		return new UnaryFunction(name, arg);
 	}
 	
+	ASTNode binary_function() {
+		skipWhitespace();
+		int off = offset;
+		
+		String name = identifier();
+		if (name == null)
+			return null;
+		
+		ASTNode arg0 = prod();
+		if (arg0 == null) {
+			offset = off;
+			return null;
+		}
+		
+		ASTNode arg1 = prod();
+		if (arg1 == null) {
+			offset = off;
+			return null;
+		}
+		
+		return new BinaryFunction(name, arg0, arg1);
+	}
+	
 	ASTNode prod() {
 		skipWhitespace();
 		ASTNode ret;
+		
+		// prod := binary_function
+		if ((ret = binary_function()) != null)
+			return ret;
 		
 		// prod := unary_function
 		if ((ret = unary_function()) != null)

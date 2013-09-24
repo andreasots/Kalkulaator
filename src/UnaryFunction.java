@@ -65,7 +65,7 @@ public class UnaryFunction implements ASTNode {
 		case "ulp":
 			return Math.ulp(arg.eval());
 		default:
-			throw new RuntimeException("Unknown unary function");
+			throw new RuntimeException("Unknown unary function: "+func);
 		}
 	}
 }
