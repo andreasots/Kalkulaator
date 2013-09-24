@@ -23,7 +23,7 @@ public class Main {
 			try {
 				System.out.println(parser.parse(expr).eval());
 			} catch (Exception e) {
-				e.printStackTrace();
+				System.err.println(e.getMessage());
 			}
 		}
 	}

@@ -8,13 +8,15 @@ public class Parser {
 		offset = 0;
 		ASTNode ret = expr();
 		if (ret == null || offset < expression.length())
-			throw new Exception("Parse error: ");
+			throw new Exception("Parse error at offset " + offset);
 		return ret;
 	}
 	
 	ASTNode expr() {
+		skipWhitespace();
 		ASTNode ret = null;
 		
+		// expr := '-' prod
 		if (isValid() && expression.charAt(offset) == '-') {
 			int off = offset;
 			offset++;
@@ -23,10 +25,12 @@ public class Parser {
 			offset = off;
 		}
 		
-		ret = prod();
-		if (ret == null)
+		if ((ret = prod()) == null)
 			return null;
 		
+		skipWhitespace();
+		
+		// expr := prod '+' expr
 		if (isValid() && expression.charAt(offset) == '+') {
 			int off = offset;
 			offset++;
@@ -36,6 +40,7 @@ public class Parser {
 			offset = off;
 		}
 		
+		// expr := prod '-' expr
 		if (isValid() && expression.charAt(offset) == '-') {
 			int off = offset;
 			offset++;
@@ -45,14 +50,44 @@ public class Parser {
 			offset = off;
 		}
 		
+		// expr := prod
+		
 		return ret;
 	}
 	
-	ASTNode prod() {
-		ASTNode ret = num();
-		if (ret == null)
+	ASTNode unary_function() {
+		skipWhitespace();
+		// unary_function := identifier expr
+		int off = offset;
+		
+		String name = identifier();
+		if (name == null)
 			return null;
 		
+		ASTNode arg = prod();
+		if (arg == null) {
+			offset = off;
+			return null;
+		}
+		
+		return new UnaryFunction(name, arg);
+	}
+	
+	ASTNode prod() {
+		skipWhitespace();
+		ASTNode ret;
+		
+		// prod := unary_function
+		if ((ret = unary_function()) != null)
+			return ret;
+		
+		// prod := num
+		if ((ret = num()) == null)
+			return null;
+		
+		skipWhitespace();
+		
+		// prod := num '*' prod
 		if (isValid() && expression.charAt(offset) == '*') {
 			int off = offset;
 			offset++;
@@ -62,6 +97,7 @@ public class Parser {
 			offset = off;
 		}
 		
+		// prod := num '/' prod
 		if (isValid() && expression.charAt(offset) == '/') {
 			int off = offset;
 			offset++;
@@ -71,10 +107,37 @@ public class Parser {
 			offset = off;
 		}
 		
+		// prod := num '%' prod
+		if (isValid() && expression.charAt(offset) == '%') {
+			int off = offset;
+			offset++;
+			ASTNode right;
+			if ((right = prod()) != null)
+				return new Mod(ret, right);
+			offset = off;
+		}
+		
+		// prod := num
+		
 		return ret;
 	}
 	
+	String identifier() {
+		skipWhitespace();
+		if (!isValid() || !Character.isJavaIdentifierStart(expression.charAt(offset)))
+			return null;
+		String str = new String();
+		str = str.concat(expression.substring(offset, offset+1));
+		offset++;
+		while (isValid() && Character.isJavaIdentifierPart(expression.charAt(offset))) {
+			str = str.concat(expression.substring(offset, offset+1));
+			offset++;
+		}
+		return str;
+	}
+	
 	ASTNode literal() {
+		skipWhitespace();
 		String str = new String();
 		boolean dot = false;
 		while (isValid() && (nextIsDigit() || (!dot && (expression.charAt(offset) == '.')))) {
@@ -113,5 +176,10 @@ public class Parser {
 	
 	boolean nextIsDigit() {
 		return (expression.charAt(offset) >= '0') && (expression.charAt(offset) <= '9');
+	}
+	
+	void skipWhitespace() {
+		while (isValid() && Character.isWhitespace(expression.charAt(offset)))
+			offset++;
 	}
 }
