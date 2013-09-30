@@ -9,7 +9,7 @@ public class Main {
 	    
 	    // REPL
 		while (true) {
-			System.out.print("> ");
+			System.out.print(">>> ");
 			String expr = null;
 			try {
 				expr = input.readLine();
