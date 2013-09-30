@@ -11,4 +11,8 @@ public class Sub implements ASTNode {
 		return left.eval()-right.eval();
 	}
 
+	@Override
+	public String toString() {
+		return String.format("(%s)-(%s)", left, right);
+	}
 }

@@ -20,9 +20,19 @@ public class Main {
 			if (expr == null)
 				break;
 			
+			ASTNode tree;
 			try {
-				System.out.println(parser.parse(expr).eval());
+				tree = parser.parse(expr);
 			} catch (Exception e) {
+				System.err.println(e.getMessage());
+				continue;
+			}
+			
+			System.out.printf("%s = ", tree);
+			try {
+				System.out.printf("%.15f\n", tree.eval());
+			} catch (Exception e) {
+				System.out.println("ERROR");
 				System.err.println(e.getMessage());
 			}
 		}

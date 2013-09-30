@@ -12,4 +12,8 @@ public class UnaryMinus implements ASTNode {
 		return -node.eval();
 	}
 
+	@Override
+	public String toString() {
+		return String.format("-(%s)", node);
+	}
 }

@@ -68,4 +68,9 @@ public class UnaryFunction implements ASTNode {
 			throw new RuntimeException("Unknown unary function: "+func);
 		}
 	}
+	
+	@Override
+	public String toString() {
+		return String.format("%s (%s)", func, arg);
+	}
 }

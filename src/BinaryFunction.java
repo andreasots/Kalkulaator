@@ -35,4 +35,8 @@ public class BinaryFunction implements ASTNode {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return String.format("%s (%s) (%s)", name, arg0, arg1);
+	}
 }

@@ -11,4 +11,8 @@ public class Number implements ASTNode {
 		return value;
 	}
 
+	@Override
+	public String toString() {
+		return Double.toString(value);
+	}
 }
