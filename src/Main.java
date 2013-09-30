@@ -24,7 +24,7 @@ public class Main {
 			try {
 				tree = parser.parse(expr);
 			} catch (Exception e) {
-				System.err.println(e.getMessage());
+				System.err.println("Error: "+e.getMessage());
 				continue;
 			}
 			
@@ -33,7 +33,7 @@ public class Main {
 				System.out.printf("%.15f\n", tree.eval());
 			} catch (Exception e) {
 				System.out.println("ERROR");
-				System.err.println(e.getMessage());
+				System.err.println("Error: "+e.getMessage());
 			}
 		}
 	}

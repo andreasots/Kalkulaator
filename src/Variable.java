@@ -1,23 +1,16 @@
 public class Variable implements ASTNode {
-	String name;
-	Variable(String name) {
-		this.name = name;
+	Function v;
+	Variable(Function v) {
+		this.v = v;
 	}
 	
 	@Override
 	public double eval() {
-		switch (name) {
-		case "pi":
-			return Math.PI;
-		case "e":
-			return Math.E;
-		default:
-			throw new RuntimeException("Undeclared variable: "+name);
-		}
+		return v.eval();
 	}
 
 	@Override
 	public String toString() {
-		return name;
+		return v.name;
 	}
 }
