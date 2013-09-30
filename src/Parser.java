@@ -96,6 +96,13 @@ public class Parser {
 		return new BinaryFunction(name, arg0, arg1);
 	}
 	
+	ASTNode variable() {
+		String name;
+		if ((name = identifier()) == null)
+			return null;
+		return new Variable(name);
+	}
+	
 	ASTNode prod() {
 		skipWhitespace();
 		ASTNode ret;
@@ -187,6 +194,8 @@ public class Parser {
 	ASTNode num() {
 		ASTNode ret = null;
 		if ((ret = literal()) != null)
+			return ret;
+		if ((ret = variable()) != null)
 			return ret;
 		if (isValid() && expression.charAt(offset) == '(') {
 			int off = offset;
