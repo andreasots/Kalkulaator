@@ -138,6 +138,11 @@ public class Parser {
 				return Math.pow(a, b);
 			}
 		});
+		names.put("random", new Function("random") {
+			double eval() {
+				return Math.random();
+			}
+		});
 		names.put("rint", new Function("rint") {
 			double eval(double a) {
 				return Math.rint(a);
