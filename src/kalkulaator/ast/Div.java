@@ -1,7 +1,8 @@
+package kalkulaator.ast;
 
-public class Div implements ASTNode {
-	ASTNode left, right;
-	Div(ASTNode left, ASTNode right) {
+public class Div implements Node {
+	Node left, right;
+	public Div(Node left, Node right) {
 		this.left = left; 
 		this.right = right;
 	}

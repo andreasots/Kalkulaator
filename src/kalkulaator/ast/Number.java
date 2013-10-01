@@ -1,8 +1,9 @@
+package kalkulaator.ast;
 
-public class Number implements ASTNode {
+public class Number implements Node {
 	double value;
 	
-	Number(String str) {
+	public Number(String str) {
 		value = Double.parseDouble(str);
 	}
 	

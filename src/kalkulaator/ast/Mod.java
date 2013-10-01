@@ -1,7 +1,8 @@
+package kalkulaator.ast;
 
-public class Mod implements ASTNode {
-	ASTNode left, right;
-	Mod(ASTNode left, ASTNode right) {
+public class Mod implements Node {
+	Node left, right;
+	public Mod(Node left, Node right) {
 		this.left = left; 
 		this.right = right;
 	}

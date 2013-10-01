@@ -1,7 +1,8 @@
+package kalkulaator.ast;
 
-public class Sub implements ASTNode {
-	ASTNode left, right;
-	Sub(ASTNode left, ASTNode right) {
+public class Sub implements Node {
+	Node left, right;
+	public Sub(Node left, Node right) {
 		this.left = left; 
 		this.right = right;
 	}

@@ -1,9 +1,10 @@
+package kalkulaator.ast;
 
-public class BinaryFunction implements ASTNode {
+public class BinaryFunction implements Node {
 	Function f;
-	ASTNode arg0, arg1;
+	Node arg0, arg1;
 	
-	BinaryFunction(Function f, ASTNode x, ASTNode y) {
+	public BinaryFunction(Function f, Node x, Node y) {
 		this.f = f;
 		arg0 = x;
 		arg1 = y;

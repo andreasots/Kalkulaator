@@ -1,8 +1,9 @@
+package kalkulaator.ast;
 
-public class UnaryFunction implements ASTNode {
+public class UnaryFunction implements Node {
 	Function f;
-	ASTNode arg;
-	UnaryFunction(Function f, ASTNode x) {
+	Node arg;
+	public UnaryFunction(Function f, Node x) {
 		this.f = f;
 		arg = x;
 	}

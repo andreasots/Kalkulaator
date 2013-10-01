@@ -1,7 +1,8 @@
+package kalkulaator.ast;
 
-public class Mul implements ASTNode {
-	ASTNode left, right;
-	Mul(ASTNode left, ASTNode right) {
+public class Mul implements Node {
+	Node left, right;
+	public Mul(Node left, Node right) {
 		this.left = left; 
 		this.right = right;
 	}

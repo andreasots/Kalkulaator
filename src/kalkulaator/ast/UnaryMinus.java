@@ -1,8 +1,9 @@
+package kalkulaator.ast;
 
-public class UnaryMinus implements ASTNode {
-	private ASTNode node;
+public class UnaryMinus implements Node {
+	private Node node;
 	
-	UnaryMinus(ASTNode node) {
+	public UnaryMinus(Node node) {
 		this.node = node;
 	}
 	

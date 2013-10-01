@@ -1,11 +1,12 @@
+package kalkulaator.ast;
 import java.util.Map;
 
-public class Assign implements ASTNode {
+public class Assign implements Node {
 	Map<String, Function> names;
 	String name;
-	ASTNode value;
+	Node value;
 	
-	public Assign(Map<String, Function> names, String name, ASTNode value) {
+	public Assign(Map<String, Function> names, String name, Node value) {
 		this.names = names;
 		this.name = name;
 		this.value = value;
@@ -15,7 +16,7 @@ public class Assign implements ASTNode {
 	public double eval() {
 		final double x = value.eval();
 		names.put(name, new Function(name) {
-			double eval() {
+			public double eval() {
 				return x;
 			}
 		});

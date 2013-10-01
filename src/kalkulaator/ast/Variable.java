@@ -1,6 +1,7 @@
-public class Variable implements ASTNode {
+package kalkulaator.ast;
+public class Variable implements Node {
 	Function v;
-	Variable(Function v) {
+	public Variable(Function v) {
 		this.v = v;
 	}
 	
