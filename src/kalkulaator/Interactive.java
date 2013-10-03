@@ -10,6 +10,12 @@ public class Interactive {
 		Parser parser = new Parser();
 	    BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 	    
+	    System.out.print("Defineeritud sümbolid:");
+	    for (String f : parser.names())
+	    	System.out.print(" "+f);
+	    System.out.println("");
+	    
+	    
 	    // REPL
 		while (true) {
 			System.out.print(">>> ");
@@ -27,7 +33,7 @@ public class Interactive {
 			try {
 				tree = parser.parse(expr);
 			} catch (Exception e) {
-				System.err.println("Error: "+e.getMessage());
+				System.err.println("Viga: "+e.getMessage());
 				continue;
 			}
 			
@@ -35,8 +41,8 @@ public class Interactive {
 			try {
 				System.out.printf("%.15f\n", tree.eval());
 			} catch (Exception e) {
-				System.out.println("ERROR");
-				System.err.println("Error: "+e.getMessage());
+				System.out.println("Viga");
+				System.err.println("Viga: "+e.getMessage());
 			}
 		}
 	}

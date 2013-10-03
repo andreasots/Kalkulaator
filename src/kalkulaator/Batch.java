@@ -15,11 +15,11 @@ public class Batch {
 			try {
 				input = new BufferedReader(new FileReader(new File(args[0])));
 			} catch (FileNotFoundException e1) {
-				System.err.printf("%s: File not found\n", args[0]);
+				System.err.printf("%s: faili ei leitud\n", args[0]);
 				return;
 			}
 		} else {
-	    	System.err.printf("Usage: %s [script]\n", Batch.class.getName());
+	    	System.err.printf("Kasutamine: %s [skript]\n", Batch.class.getName());
 	    	return;
 		}
 	    
@@ -31,7 +31,7 @@ public class Batch {
 					break;
 				parser.parse(expr).eval();
 			} catch (Exception e) {
-				System.err.println("Error: "+e.getMessage());
+				System.err.println("Viga: "+e.getMessage());
 			}			
 		}
 	}

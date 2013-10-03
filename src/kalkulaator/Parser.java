@@ -1,5 +1,8 @@
 package kalkulaator;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import kalkulaator.ast.Node;
@@ -236,14 +239,14 @@ public class Parser {
 		offset = 0;
 		Node ret = expr();
 		if (ret == null || offset < expression.length())
-			throw new Exception("Parse error at offset " + offset);
+			throw new Exception(String.format("Parssimise viga peale %d. sümbolit", offset));
 		return ret;
 	}
 	
 	Function resolve(String name) {
 		Function ret = names.get(name);
 		if (ret == null)
-			throw new RuntimeException(String.format("'%s' is not defined", name));
+			throw new RuntimeException(String.format("Sümbol '%s' defineerimata", name));
 		return ret;
 	}
 	
@@ -466,5 +469,12 @@ public class Parser {
 	void skipWhitespace() {
 		while (isValid() && Character.isWhitespace(expression.charAt(offset)))
 			offset++;
+	}
+
+	public List<String> names() {
+		ArrayList<String> list = new ArrayList<String>();
+		list.addAll(names.keySet());
+		Collections.sort(list);
+		return list;
 	}
 }
