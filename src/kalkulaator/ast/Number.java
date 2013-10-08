@@ -3,8 +3,8 @@ package kalkulaator.ast;
 public class Number implements Node {
 	double value;
 	
-	public Number(String str) {
-		value = Double.parseDouble(str);
+	public Number(double d) {
+		value = d;
 	}
 	
 	@Override

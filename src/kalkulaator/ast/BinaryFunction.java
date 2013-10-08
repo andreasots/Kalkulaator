@@ -1,5 +1,7 @@
 package kalkulaator.ast;
 
+import kalkulaator.parser.Function;
+
 public class BinaryFunction implements Node {
 	Function f;
 	Node arg0, arg1;

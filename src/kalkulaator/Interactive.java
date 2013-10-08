@@ -34,6 +34,7 @@ public class Interactive {
 				tree = parser.parse(expr);
 			} catch (Exception e) {
 				System.err.println("Viga: "+e.getMessage());
+				e.printStackTrace();
 				continue;
 			}
 			
@@ -43,6 +44,7 @@ public class Interactive {
 			} catch (Exception e) {
 				System.out.println("Viga");
 				System.err.println("Viga: "+e.getMessage());
+				e.printStackTrace();
 			}
 		}
 	}

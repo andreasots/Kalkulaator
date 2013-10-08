@@ -1,9 +1,11 @@
-package kalkulaator.ast;
+package kalkulaator.parser;
 public class Function {
-	String name;
+	public String name;
+	public int args;
 	
-	public Function(String f) {
+	public Function(String f, int a) {
 		name = f;
+		args = a;
 	}
 	
 	public double eval() {

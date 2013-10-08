@@ -1,4 +1,7 @@
 package kalkulaator.ast;
+
+import kalkulaator.parser.Function;
+
 public class Variable implements Node {
 	Function v;
 	public Variable(Function v) {

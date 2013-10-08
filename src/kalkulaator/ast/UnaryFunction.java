@@ -1,5 +1,7 @@
 package kalkulaator.ast;
 
+import kalkulaator.parser.Function;
+
 public class UnaryFunction implements Node {
 	Function f;
 	Node arg;
