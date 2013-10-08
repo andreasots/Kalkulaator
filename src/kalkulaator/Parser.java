@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import kalkulaator.ast.Conditional;
 import kalkulaator.ast.Node;
 import kalkulaator.ast.Add;
 import kalkulaator.ast.Assign;
@@ -228,10 +229,6 @@ public class Parser {
 				return Math.ulp(a);
 			}
 		});
-/*	
-
-	case "rint":
-	case "round":*/
 	}
 	
 	Node parse(String str) throws Exception {
@@ -242,6 +239,7 @@ public class Parser {
 			throw new Exception(String.format("Parssimise viga peale %d. sümbolit", offset));
 		return ret;
 	}
+	
 	
 	Function resolve(String name) {
 		Function ret = names.get(name);
@@ -265,6 +263,17 @@ public class Parser {
 				if ((ret = expr()) != null)
 					return new Assign(names, name, ret);
 			}
+			offset = off;
+		}
+		
+		// expr := "if" expr "then" expr "else" expr
+		{
+			int off = offset;
+			Node cond, branch1, branch2;
+			if ("if".equals(identifier()) && (cond = expr()) != null &&
+					"then".equals(identifier()) && (branch1 = expr()) != null &&
+					"else".equals(identifier()) && (branch2 = expr()) != null)
+				return new Conditional(cond, branch1, branch2);
 			offset = off;
 		}
 		
