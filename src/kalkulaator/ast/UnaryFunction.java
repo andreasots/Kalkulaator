@@ -17,6 +17,6 @@ public class UnaryFunction implements Node {
 	
 	@Override
 	public String toString() {
-		return String.format("%s (%s)", f.name, arg);
+		return String.format("%s(%s)", f.name, arg);
 	}
 }

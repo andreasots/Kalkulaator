@@ -28,8 +28,8 @@ public class Parser {
 	private String expression;
 	private int offset;
 	private Map<String, Function> names = new HashMap<String, Function>();
-	private Map<String, BinaryOperator> operators = new HashMap<String, BinaryOperator>();
-	private Token lookahead = null;
+	private Map<String, BinaryOperator> binary = new HashMap<String, BinaryOperator>();
+	private Deque<Token> tokens = new ArrayDeque<Token>();
 	
 	Parser() {
 		names.put("abs", new Function("abs", 1) {
@@ -234,26 +234,26 @@ public class Parser {
 			}
 		});
 		
-		operators.put("+", new BinaryOperator(Add.class, 2, true));
-		operators.put("-", new BinaryOperator(Sub.class, 2, true));
-		operators.put("*", new BinaryOperator(Mul.class, 3, true));
-		operators.put("/", new BinaryOperator(Div.class, 3, true));
-		operators.put("%", new BinaryOperator(Mod.class, 3, true));
+		binary.put("+", new BinaryOperator(Add.class, 2, true));
+		binary.put("-", new BinaryOperator(Sub.class, 2, true));
+		binary.put("*", new BinaryOperator(Mul.class, 3, true));
+		binary.put("/", new BinaryOperator(Div.class, 3, true));
+		binary.put("%", new BinaryOperator(Mod.class, 3, true));
 	}
 	
 	Node parse(String str) throws Exception {
 		expression = str;
 		offset = 0;
-		lookahead = null;
+		tokens.clear();
 		
-		Node ret = expr();
+		Node ret = statement();
 		if (ret == null || offset < expression.length())
 			throw new Exception(String.format("Parssimise viga peale %d. sümbolit", offset));
 		return ret;
 	}
 	
 	private void pushOperator(Deque<Node> output, Deque<Token> operators) throws Exception {
-		BinaryOperator op = this.operators.get(operators.pop().value());
+		BinaryOperator op = this.binary.get(operators.pop().value());
 		Node r, l;
 		try {
 			r = output.pop();
@@ -269,30 +269,80 @@ public class Parser {
 	}
 	
 	private void pushFunction(Deque<Node> output, Deque<Token> operators) throws Exception {
-		Function f = resolve((String) operators.pop().value());
+		Function f = resolve(operators.pop().value());
 		switch (f.args) {
 		case 0:
 			output.push(new Variable(f));
 			break;
 		case 1:
-			output.push(new UnaryFunction(f, output.pop()));
+			try {
+				output.push(new UnaryFunction(f, output.pop()));
+			} catch (java.util.NoSuchElementException e) {
+				throw new Exception("Funktsiooni argumenti ei leitud");
+			}
 			break;
-		case 2: {
-			Node l = output.pop();
-			Node r = output.pop();
-			output.push(new BinaryFunction(f, l, r));
+		case 2:
+			try {
+				Node r = output.pop();
+				Node l = output.pop();
+				output.push(new BinaryFunction(f, l, r));
+			} catch (java.util.NoSuchElementException e) {
+				throw new Exception("Funktsiooni argumenti ei leitud");
+			}
 			break;
-		}
 		default:
 			throw new Exception(String.format("Funktsioonil '%f' on liiga palju argumente", f.name));
 		}
+	}
+	
+	Node statement() throws Exception {
+		if (look().type() == Token.RESERVED && look().value().equals("if")) {
+			Deque<Token> _tokens = new ArrayDeque<Token>(tokens);
+			int _offset = offset;
+			
+			nextToken();
+			Node cond, then, _else;
+			if ((cond = expr()) != null) {
+				if (look().type() == Token.RESERVED && look().value().equals("then")) {
+					nextToken();
+					if ((then = expr()) != null) {
+						if (look().type() == Token.RESERVED && look().value().equals("else")) {
+							nextToken();
+							if ((_else = expr()) != null)
+								return new Conditional(cond, then, _else);
+						}
+					}
+				}
+			}
+			
+			offset = _offset;
+			tokens = _tokens;
+		}
+		
+		if (look().type() == Token.IDENTIFIER) {
+			Deque<Token> _tokens = new ArrayDeque<Token>(tokens);
+			int _offset = offset;
+			
+			String name = (String) nextToken().value();
+			if (look().type() == Token.OPERATOR && look().value().equals("=")) {
+				nextToken();
+				Node node = expr();
+				if (node != null)
+					return new Assign(names, name, node);
+			}
+			
+			offset = _offset;
+			tokens = _tokens;
+		}
+		
+		return expr();
 	}
 	
 	Node expr() throws Exception {
 		Deque<Node> output = new ArrayDeque<Node>();
 		Deque<Token> operators = new ArrayDeque<Token>();
 		
-		while (look().type() != Token.ERROR) {
+		while (look().type() != Token.ERROR && look().type() != Token.RESERVED) {
 			Token t = nextToken();
 			switch(t.type()) {
 			case Token.NUMBER:
@@ -300,6 +350,10 @@ public class Parser {
 				break;
 			case Token.IDENTIFIER:
 				operators.push(t);
+				if (resolve(t.value()).args == 0) {
+					pushToken(new Token(Token.OPERATOR, ")"));
+					pushToken(new Token(Token.OPERATOR, "("));
+				}
 				break;
 			case Token.OPERATOR:
 				if (t.value().equals(",")) {
@@ -309,11 +363,11 @@ public class Parser {
 						else
 							pushFunction(output, operators);
 					}
-				} else if (this.operators.containsKey(t.value())) {
+				} else if (this.binary.containsKey(t.value())) {
 					Token tok;
-					BinaryOperator o1 = this.operators.get(t.value());
-					while (!operators.isEmpty() && (tok = operators.peek()).type() == Token.OPERATOR && this.operators.containsKey(tok.value())) {
-						BinaryOperator o2 = this.operators.get(tok.value());
+					BinaryOperator o1 = this.binary.get(t.value());
+					while (!operators.isEmpty() && (tok = operators.peek()).type() == Token.OPERATOR && this.binary.containsKey(tok.value())) {
+						BinaryOperator o2 = this.binary.get(tok.value());
 						if ((o1.left_assoc && o1.priority == o2.priority) || o1.priority < o2.priority)
 							pushOperator(output, operators);
 						else
@@ -323,12 +377,13 @@ public class Parser {
 				} else if (t.value().equals("(")) {
 					operators.push(t);
 				} else if (t.value().equals(")")) {
-					while (!operators.peek().value().equals("("))
+					while (!operators.isEmpty() && !operators.peek().value().equals("("))
 						if (operators.peek().type() == Token.OPERATOR)
 							pushOperator(output, operators);
 						else
 							pushFunction(output, operators);
-					operators.pop();
+					if (!operators.isEmpty())
+						operators.pop();
 					if (!operators.isEmpty() && operators.peek().type() == Token.IDENTIFIER)
 						pushFunction(output, operators);
 				} else {
@@ -354,23 +409,27 @@ public class Parser {
 		return output.pop();
 	}
 	
-	Function resolve(String name) throws Exception {
-		Function ret = names.get(name);
+	private void pushToken(Token token) {
+		tokens.push(token);
+	}
+
+	Function resolve(Object object) throws Exception {
+		Function ret = names.get(object);
 		if (ret == null)
-			throw new Exception(String.format("Sümbol '%s' defineerimata", name));
+			throw new Exception(String.format("Sümbol '%s' defineerimata", object));
 		return ret;
 	}
 	
 	Token look() {
-		if (lookahead == null)
+		if (tokens.isEmpty())
 			readToken();
-		return lookahead;
+		return tokens.peekFirst();
 	}
 	
 	Token nextToken() {
-		Token ret = look();
-		lookahead = null;
-		return ret;
+		if (tokens.isEmpty())
+			readToken();
+		return tokens.pop();
 	}
 	
 	void readToken() {
@@ -378,13 +437,21 @@ public class Parser {
 		String str;
 		Double d;
 		if ((str = identifier()) != null)
-			lookahead = new Token(Token.IDENTIFIER, str);
+			switch (str) {
+			case "if":
+			case "then":
+			case "else":
+				pushToken(new Token(Token.RESERVED, str));
+				break;
+			default:
+				pushToken(new Token(Token.IDENTIFIER, str));
+			}
 		else if ((str = operator()) != null)
-			lookahead = new Token(Token.OPERATOR, str);
+			pushToken(new Token(Token.OPERATOR, str));
 		else if ((d = number()) != null)
-			lookahead =  new Token(Token.NUMBER, d);
+			pushToken(new Token(Token.NUMBER, d));
 		else
-			lookahead = new Token(Token.ERROR, null);
+			pushToken(new Token(Token.ERROR, null));
 	}
 	
 	String operator() {

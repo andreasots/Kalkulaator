@@ -15,6 +15,6 @@ public class Variable implements Node {
 
 	@Override
 	public String toString() {
-		return v.name;
+		return v.name+"()";
 	}
 }

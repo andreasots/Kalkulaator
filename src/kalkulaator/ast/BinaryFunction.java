@@ -19,6 +19,6 @@ public class BinaryFunction implements Node {
 
 	@Override
 	public String toString() {
-		return String.format("%s (%s) (%s)", f.name, arg0, arg1);
+		return String.format("%s(%s, %s)", f.name, arg0, arg1);
 	}
 }
