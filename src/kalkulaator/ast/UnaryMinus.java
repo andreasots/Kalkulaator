@@ -8,7 +8,7 @@ public class UnaryMinus implements Node {
 	}
 	
 	@Override
-	public double eval() {
+	public double eval() throws Exception {
 		// TODO Auto-generated method stub
 		return -node.eval();
 	}

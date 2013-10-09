@@ -15,7 +15,7 @@ public class Assign implements Node {
 	}
 
 	@Override
-	public double eval() {
+	public double eval() throws Exception {
 		final double x = value.eval();
 		names.put(name, new Function(name, 0) {
 			public double eval() {

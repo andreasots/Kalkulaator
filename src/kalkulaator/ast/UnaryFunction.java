@@ -11,7 +11,7 @@ public class UnaryFunction implements Node {
 	}
 	
 	@Override
-	public double eval() {
+	public double eval() throws Exception {
 		return f.eval(arg.eval());
 	}
 	

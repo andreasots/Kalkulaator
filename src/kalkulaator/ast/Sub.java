@@ -8,7 +8,7 @@ public class Sub implements Node {
 	}
 	
 	@Override
-	public double eval() {
+	public double eval() throws Exception {
 		return left.eval()-right.eval();
 	}
 

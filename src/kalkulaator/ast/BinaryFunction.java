@@ -13,7 +13,7 @@ public class BinaryFunction implements Node {
 	}
 	
 	@Override
-	public double eval() {
+	public double eval() throws Exception {
 		return f.eval(arg0.eval(), arg1.eval());
 	}
 

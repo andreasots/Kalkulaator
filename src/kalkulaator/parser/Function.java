@@ -8,15 +8,15 @@ public class Function {
 		args = a;
 	}
 	
-	public double eval() {
-		throw new RuntimeException(String.format("'%s' ei ole muutuja", name));
+	public double eval() throws Exception {
+		throw new Exception(String.format("'%s' ei ole muutuja", name));
 	}
 	
-	public double eval(double x) {
-		throw new RuntimeException(String.format("'%s' ei ole ühe argumendiga funktsioon", name));
+	public double eval(double x) throws Exception {
+		throw new Exception(String.format("'%s' ei ole ühe argumendiga funktsioon", name));
 	}
 	
-	public double eval(double x, double y) {
-		throw new RuntimeException(String.format("'%s' ei ole kahe argumendiga funktsioon", name));
+	public double eval(double x, double y) throws Exception {
+		throw new Exception(String.format("'%s' ei ole kahe argumendiga funktsioon", name));
 	}
 }

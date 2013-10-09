@@ -10,7 +10,7 @@ public class Conditional implements Node {
 	}
 
 	@Override
-	public double eval() {
+	public double eval() throws Exception {
 		if (Math.abs(cond.eval()) < 1E-15)
 			return branch1.eval();
 		else

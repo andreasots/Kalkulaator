@@ -311,8 +311,8 @@ public class Parser {
 					}
 				} else if (this.operators.containsKey(t.value())) {
 					Token tok;
-					BinaryOperator o1 = this.operators.get(t.value()); 
-					while (!operators.isEmpty() && (tok = operators.peek()).type() == Token.OPERATOR) {
+					BinaryOperator o1 = this.operators.get(t.value());
+					while (!operators.isEmpty() && (tok = operators.peek()).type() == Token.OPERATOR && this.operators.containsKey(tok.value())) {
 						BinaryOperator o2 = this.operators.get(tok.value());
 						if ((o1.left_assoc && o1.priority == o2.priority) || o1.priority < o2.priority)
 							pushOperator(output, operators);
@@ -354,10 +354,10 @@ public class Parser {
 		return output.pop();
 	}
 	
-	Function resolve(String name) {
+	Function resolve(String name) throws Exception {
 		Function ret = names.get(name);
 		if (ret == null)
-			throw new RuntimeException(String.format("Sümbol '%s' defineerimata", name));
+			throw new Exception(String.format("Sümbol '%s' defineerimata", name));
 		return ret;
 	}
 	

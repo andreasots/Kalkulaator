@@ -9,7 +9,7 @@ public class Variable implements Node {
 	}
 	
 	@Override
-	public double eval() {
+	public double eval() throws Exception {
 		return v.eval();
 	}
 
