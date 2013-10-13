@@ -1,11 +1,9 @@
 package kalkulaator.parser;
 public class Function {
 	public String name;
-	public int args;
 	
-	public Function(String f, int a) {
+	public Function(String f) {
 		name = f;
-		args = a;
 	}
 	
 	public double eval() throws Exception {

@@ -12,13 +12,13 @@ public class Conditional implements Node {
 	@Override
 	public double eval() throws Exception {
 		if (Math.abs(cond.eval()) < 1E-15)
-			return branch1.eval();
-		else
 			return branch2.eval();
+		else
+			return branch1.eval();
 	}
 	
 	@Override
 	public String toString() {
-		return String.format("if (%s) then (%s) else (%s)", cond, branch1, branch2);
+		return String.format("(%s) ? (%s) : (%s)", cond, branch1, branch2);
 	}
 }

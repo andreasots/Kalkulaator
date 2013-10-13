@@ -2,9 +2,11 @@ package kalkulaator.parser;
 
 import java.lang.reflect.InvocationTargetException;
 
+import kalkulaator.Parser;
+import kalkulaator.Token;
 import kalkulaator.ast.Node;
 
-public class UnaryOperator {
+public class UnaryOperator implements PrefixOperator {
 	public Class<?> operator;
 	public int priority;
 	
@@ -22,5 +24,10 @@ public class UnaryOperator {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	@Override
+	public Node parse(Parser parser, Token token) throws Exception {
+		return construct(parser.expr(priority));
 	}
 }

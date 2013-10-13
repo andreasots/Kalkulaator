@@ -5,7 +5,6 @@ public class Token {
 	static final public int OPERATOR = 1;
 	static final public int NUMBER = 2;
 	static final public int ERROR = 3;
-	public static final int RESERVED = 4;
 	
 	private int type;
 	private Object value;
@@ -31,9 +30,16 @@ public class Token {
 			case OPERATOR:  	t = "OPERATOR";  	break;
 			case NUMBER:    	t = "NUMBER";    	break;
 			case ERROR:     	t = "ERROR";    	break;
-			case RESERVED:   	t = "RESERVED";  	break;
 			default:        	t = String.format("<unknown (%d)>", type); break;
 		}
 		return String.format("Token(%s, %s)", t, value);
-	}	
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof Token))
+			return false;
+		Token other = (Token) o;
+		return other.type == type && value != null && value.equals(other); 
+	}
 }

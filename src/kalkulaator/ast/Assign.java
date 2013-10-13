@@ -1,23 +1,22 @@
 package kalkulaator.ast;
-import java.util.Map;
 
 import kalkulaator.parser.Function;
 
 public class Assign implements Node {
-	Map<String, Function> names;
-	String name;
+	Identifier name;
 	Node value;
 	
-	public Assign(Map<String, Function> names, String name, Node value) {
-		this.names = names;
-		this.name = name;
+	public Assign(Node name, Node value) throws Exception {
+		if (!(name instanceof Identifier))
+			throw new Exception(String.format("Oodati sümbolit, leiti '%s'", name));
+		this.name = (Identifier)name;
 		this.value = value;
 	}
 
 	@Override
 	public double eval() throws Exception {
 		final double x = value.eval();
-		names.put(name, new Function(name, 0) {
+		name.names.put(name.name, new Function(name.name) {
 			public double eval() {
 				return x;
 			}

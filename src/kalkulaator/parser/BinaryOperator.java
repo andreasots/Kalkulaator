@@ -2,9 +2,11 @@ package kalkulaator.parser;
 
 import java.lang.reflect.InvocationTargetException;
 
+import kalkulaator.Parser;
+import kalkulaator.Token;
 import kalkulaator.ast.Node;
 
-public class BinaryOperator {
+public class BinaryOperator implements InfixOperator {
 	public Class<?> operator;
 	public int priority;
 	public boolean left_assoc;
@@ -13,6 +15,10 @@ public class BinaryOperator {
 		this.operator = operator;
 		this.priority = priority;
 		this.left_assoc = left_assoc;
+	}
+		
+	public Node parse(Parser parser, Node left, Token tok) throws Exception {
+		return construct(left, parser.expr(left_assoc? priority: priority-1));
 	}
 	
 	public Node construct(Node l, Node r) {
@@ -24,5 +30,10 @@ public class BinaryOperator {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	@Override
+	public int precedence() {
+		return priority;
 	}
 }
